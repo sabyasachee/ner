@@ -7,6 +7,12 @@ from utils import data_converter, conlleval
 from features import local_features
 
 def crf_model(train_fname, model_file):
+    '''
+    trains crf model and writes it to model_file
+    input -
+        train_fname         : file path to train set
+        model_file          : file path where crf model will be saved
+    '''
     train_sentences = data_converter.read_data(train_fname)
     train_features = local_features.add_local_features(train_sentences)
     train_labels = data_converter.get_column(train_sentences, -1)
@@ -19,6 +25,12 @@ def crf_model(train_fname, model_file):
     crf_trainer.train(model_file)
 
 def crf_eval(dev_fname, model_file):
+    '''
+    infers on dev set using model found in model_file and prints F1 scores
+    input -
+        dev_fname           : file path to dev set
+        model_file          : file path to crf model
+    '''
     dev_sentences = data_converter.read_data(dev_fname)
     dev_features = local_features.add_local_features(dev_sentences)
     dev_labels = data_converter.get_column(dev_sentences, -1)
@@ -35,6 +47,13 @@ def crf_eval(dev_fname, model_file):
     conlleval.evaluate(iterable)
 
 def crf_infer(test_fname, model_file, out_fname):
+    '''
+    infers on test set using model found in model file and writes predictions to out_fname file
+    input -
+        test_fname          : file path to test set
+        model_file          : file path to crf model
+        out_fname           : file path where predictions shall be saved
+    '''
     test_sentences = data_converter.read_data(test_fname)
     test_features = local_features.add_local_features(test_sentences)
 

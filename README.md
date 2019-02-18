@@ -4,10 +4,11 @@ The predictions for onto.testb are in output folder. The filenames are crf_outpu
 
 # Installation
 
-Ensure python 3 environment, and perform following setup
+Ensure python 3 environment. You'll need to pip install the following
 
 ```
-pip install -r requirements.txt
+pip install python-crfsuite
+pip install flair
 mkdir models
 ```
 
