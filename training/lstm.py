@@ -30,7 +30,7 @@ def train():
 
     model_path = os.path.join(path, "../models/")
 
-    trainer.train(model_path, learning_rate = 0.1, mini_batch_size = 64, max_epochs = 1)
+    trainer.train(model_path, learning_rate = 0.1, mini_batch_size = 64, max_epochs = 3)
 
 def infer():
     columns = {0: "word", 1: "postag"}

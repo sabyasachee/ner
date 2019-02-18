@@ -1,17 +1,31 @@
-# Overview
+# Output
 
-This code repository provides the data  and evaluation script to help you start your project.
+The predictions for onto.testb are in output folder. The filenames are crf_output.txt and lstm_output.txt. The report is the file report.pdf
 
-## Data
+# Installation
 
-Both train, testa and (unlabeled) testb are provided. It's stored in `data/` folder. The data is organized into three columns with each representing: token, POS-tag, label
+Ensure python 3 environment, and perform following setup
 
-## Evaluation
+```
+pip install -r requirements.txt
+mkdir models
+```
 
-The offical evaluation script is written in `perl`, which is hard to integrate with current systems. [Here](https://github.com/spyysalo/conlleval.py) is a re-written version of evaluation script in python, which I included in `utils/conlleval.py`. The evaluation script works by taking a test file with *four* columns -- the original file with one additional column of predicted label at the end, it will generate a detailed report available for examination. 
+# Usage
 
-To run this evaluation script, run command line:
+## CRF
 
-`python conlleval.py ${PREDICTION_FILE}`
+```
+cd training
+python crf.py mode
+```
+**mode** can take the values *train*, *eval* and *infer*. *train* trains the crf model and saves it under models directory. *eval* prints the development set performance. *infer* writes the predictions of test set in output directory.
 
-Or invoke function `evaluate()` directly on data represeted as list of sentences. See `utils/data_converter.py` for more details.
+## LSTM
+```
+cd training
+python lstm.py mode
+```
+**mode** can take the values *train* and *infer*. *train* trains the crf lstm model, saves it under models directory and prints the development set performance. *infer* writes the predictions of test set in output directory.
+
+Please note, training the crf lstm model takes atleast 4 hours. Please ensure access to a GPU. Inference takes atleast ten minutes.
