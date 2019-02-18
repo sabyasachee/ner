@@ -1,4 +1,5 @@
-import sys
+import sys, os
+path = os.path.dirname(__file__)
 sys.path.append("..")
 
 import pycrfsuite
@@ -17,7 +18,7 @@ def crf_model(train_fname, model_file):
     
     crf_trainer.train(model_file)
 
-def crf_infer(dev_fname, model_file):
+def crf_eval(dev_fname, model_file):
     dev_sentences = data_converter.read_data(dev_fname)
     dev_features = local_features.add_local_features(dev_sentences)
     dev_labels = data_converter.get_column(dev_sentences, -1)
@@ -33,6 +34,36 @@ def crf_infer(dev_fname, model_file):
         iterable.append("")
     conlleval.evaluate(iterable)
 
+def crf_infer(test_fname, model_file, out_fname):
+    test_sentences = data_converter.read_data(test_fname)
+    test_features = local_features.add_local_features(test_sentences)
+
+    crf_tagger = pycrfsuite.Tagger()
+    crf_tagger.open(model_file)
+    test_predictions = [crf_tagger.tag(xseq) for xseq in test_features]
+
+    with open(out_fname, "w") as fw:
+        for predictions in test_predictions:
+            for prediction in predictions:
+                fw.write("{}\n".format(prediction))
+            fw.write("\n")
+    print("crf output written")
+
 if __name__ == "__main__":
-    # crf_model("../data/onto.train","../models/crf.model.bin")
-    crf_infer("../data/onto.testa","../models/crf.model.bin")
+    if len(sys.argv) != 2:
+        sys.exit("""usage: python crf.py mode\n\tmode :\n\t\ttrain = train crf and write model file\n\t\teval = evaluate crf model on dev set\n\t\tinfer = infer
+                model on test set""")
+
+    model_file = os.path.join(path, "../models/crf.model.bin")
+    train_fname = os.path.join(path, "../data/onto.train")
+    dev_fname = os.path.join(path, "../data/onto.testa")
+    test_fname = os.path.join(path, "../data/onto.testb")
+    out_fname = os.path.join(path, "../output/crf_output.txt")
+    mode = sys.argv[1]
+    
+    if mode == "train":
+        crf_model(train_fname, model_file)
+    elif mode == "eval":
+        crf_eval(dev_fname, model_file)
+    elif mode == "infer":
+        crf_infer(test_fname, model_file, out_fname)
